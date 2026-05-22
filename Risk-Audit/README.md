@@ -36,7 +36,7 @@ This project was built to demonstrate practical experience in:
 ## Project Structure
 
 ```text
-msp-risk-audit-tool/
+Risk-Audit/
 ├── app/
 │   └── dashboard.py
 ├── infrascope/
@@ -173,28 +173,11 @@ Open the HTML report in a browser. You should see:
 - Network diagram text
 
 ---
-
-## Interview Pitch
-
-I built InfraScope to extend my Jio internship experience in security risk assessment automation using Python and Nmap. The tool simulates how an MSP or IT solutions provider would assess a client network: discover assets, identify risky services, score findings, document the environment, and produce a client-ready remediation report.
-
----
-
-## No API Required
-
-This MVP does **not** require any API key, paid account, or cloud subscription.
-
-Optional future integrations can be added in:
-
-```text
-infrascope/collectors/
-```
-
-Possible future connectors:
+## Possible future connectors:
 
 - Microsoft Graph API for Microsoft 365 security posture
 - Azure CLI export for NSG/security rules
 - AWS boto3 for security groups
 - Datto/backup platform export CSV
 
-Keep secrets in a local `.env` file and never upload it to GitHub.
+
