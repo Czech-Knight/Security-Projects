@@ -120,13 +120,67 @@ Use `.env.example` and `config.example.yaml` as templates. Do not commit real se
 
 ## Screenshots
 
-1. Dashboard overview
-2. Microsoft 365 audit table
-3. Cloud exposure findings
-4. Firewall risk findings
-5. Backup/DR health page
-6. Generated HTML report
-7. Mermaid architecture diagram
+### Dashboard Overview
+
+The dashboard gives a quick summary of the client environment, including the overall risk score, risk level, total findings, critical issues, and visual risk breakdowns.
+
+![Dashboard Overview](docs/screenshots/Dash1.png)
+
+---
+
+### Risk Findings
+
+All detected issues are collected into a single findings table with severity, asset, evidence, business impact, and recommended remediation.
+
+![All Findings](docs/screenshots/Dash2.png)
+
+---
+
+### Microsoft 365 Audit
+
+The Microsoft 365 module checks sample user posture, including MFA status, admin users, stale accounts, mailbox type, and licensing status.
+
+![Microsoft 365 Audit](docs/screenshots/Dash3.png)
+
+---
+
+### Cloud Exposure Review
+
+The cloud module reviews Azure NSG rules and AWS Security Group rules to identify risky public exposures such as public RDP, SSH, HTTP, and database access.
+
+![Cloud Exposure Findings](docs/screenshots/Dash4.png)
+
+---
+
+### Firewall Rule Review
+
+The firewall module checks for broad allow rules, public administrative access, exposed database ports, and missing rule descriptions.
+
+![Firewall Risk Findings](docs/screenshots/Dash5.png)
+
+---
+
+### Network Documentation
+
+The network module provides a client device inventory and supports documentation of assets such as firewalls, servers, workstations, printers, and IoT devices.
+
+![Network Device Inventory](docs/screenshots/Dash6.png)
+
+---
+
+### Backup and Disaster Recovery
+
+The backup/DR module checks backup success, failure status, retention days, stale backups, and whether recovery testing has been performed.
+
+![Backup and Disaster Recovery](docs/screenshots/Dash7.png)
+
+---
+
+### Client Report and Recommended Actions
+
+The report section generates a client-ready summary with recommended next actions based on the highest-risk findings.
+
+![Generated Client Report](docs/screenshots/Dash8.png)
 
 ---
 
