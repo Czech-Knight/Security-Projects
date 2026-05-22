@@ -184,16 +184,6 @@ The report section generates a client-ready summary with recommended next action
 
 ---
 
-## Resume Bullets
-
-- Built Client360, a Python-based IT infrastructure and cyber security readiness dashboard for MSP-style client environments.
-- Implemented Microsoft 365, Azure, AWS, firewall, network and backup/DR audit modules using sample and API-ready data collectors.
-- Developed a risk scoring engine that classifies infrastructure findings as Low, Medium, High, or Critical with evidence, business impact, and remediation guidance.
-- Automated client-ready HTML/PDF report generation and infrastructure documentation diagrams using Python, Jinja2, ReportLab and Mermaid.
-- Designed the project to support real-world junior IT support workflows including client environment documentation, troubleshooting, cloud inventory review and security best-practice checks.
-
----
-
 ## Disclaimer
 
 Client360 is not a penetration testing tool. It is a defensive readiness, documentation, and configuration review tool for authorised environments.
