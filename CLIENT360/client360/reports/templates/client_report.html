@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Client360 IT & Security Readiness Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; color: #1f2937; }
+    h1 { color: #111827; margin-bottom: 4px; }
+    h2 { margin-top: 32px; color: #111827; }
+    .muted { color: #6b7280; }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+    .card { border: 1px solid #d1d5db; border-radius: 12px; padding: 14px; background: #f9fafb; }
+    .card .number { font-size: 28px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #f3f4f6; }
+    .Critical { color: #991b1b; font-weight: bold; }
+    .High { color: #b45309; font-weight: bold; }
+    .Medium { color: #92400e; font-weight: bold; }
+    .Low { color: #065f46; font-weight: bold; }
+    .footer { margin-top: 32px; font-size: 12px; color: #6b7280; }
+  </style>
+</head>
+<body>
+  <h1>Client360 IT & Security Readiness Report</h1>
+  <p class="muted">Client: {{ client.name }} | Environment: {{ client.environment }} | Generated: {{ generated_at }}</p>
+
+  <div class="cards">
+    <div class="card"><div>Overall Score</div><div class="number">{{ summary.score }}/100</div></div>
+    <div class="card"><div>Risk Level</div><div class="number">{{ summary.risk_label }}</div></div>
+    <div class="card"><div>Total Findings</div><div class="number">{{ summary.total_findings }}</div></div>
+    <div class="card"><div>Critical Findings</div><div class="number">{{ summary.severity_counts.Critical }}</div></div>
+  </div>
+
+  <h2>Severity Summary</h2>
+  <table>
+    <tr><th>Critical</th><th>High</th><th>Medium</th><th>Low</th></tr>
+    <tr>
+      <td>{{ summary.severity_counts.Critical }}</td>
+      <td>{{ summary.severity_counts.High }}</td>
+      <td>{{ summary.severity_counts.Medium }}</td>
+      <td>{{ summary.severity_counts.Low }}</td>
+    </tr>
+  </table>
+
+  <h2>Detailed Findings</h2>
+  <table>
+    <tr>
+      <th>Severity</th>
+      <th>Category</th>
+      <th>Title</th>
+      <th>Asset</th>
+      <th>Evidence</th>
+      <th>Business Impact</th>
+      <th>Recommendation</th>
+    </tr>
+    {% for f in findings %}
+    <tr>
+      <td class="{{ f.severity }}">{{ f.severity }}</td>
+      <td>{{ f.category }}</td>
+      <td>{{ f.title }}</td>
+      <td>{{ f.asset }}</td>
+      <td>{{ f.evidence }}</td>
+      <td>{{ f.business_impact }}</td>
+      <td>{{ f.recommendation }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div class="footer">
+    This report is generated from imported/sample configuration data and is intended for defensive IT readiness review by authorised personnel.
+  </div>
+</body>
+</html>

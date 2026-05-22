@@ -1,0 +1,4 @@
+asset,resource_group,nsg_name,rule_name,direction,access,protocol,source,destination,port,priority
+Azure VM client-dc01,rg-prod,nsg-prod,Allow-RDP-Internet,Inbound,Allow,TCP,0.0.0.0/0,10.1.0.10,3389,100
+Azure VM web01,rg-prod,nsg-web,Allow-HTTP,Inbound,Allow,TCP,0.0.0.0/0,10.1.1.20,80,110
+Azure VM app01,rg-prod,nsg-app,Allow-Internal-App,Inbound,Allow,TCP,10.1.0.0/16,10.1.2.30,8443,120

@@ -1,0 +1,11 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+.DS_Store
+reports/*.pdf
+reports/*.html
+reports/*.md
+!reports/.gitkeep

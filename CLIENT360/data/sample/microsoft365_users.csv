@@ -1,0 +1,6 @@
+display_name,user_principal_name,role,mfa_enabled,last_sign_in_days_ago,mailbox_type,license_assigned
+Priya Shah,priya@demo-client.com,Global Admin,False,2,UserMailbox,True
+Alex Wong,alex@demo-client.com,User,True,10,UserMailbox,True
+Finance Shared,finance@demo-client.com,User,True,5,SharedMailbox,False
+Temp Contractor,temp.contractor@demo-client.com,User,False,120,UserMailbox,True
+Old Sales User,old.sales@demo-client.com,User,True,180,UserMailbox,True

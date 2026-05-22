@@ -1,0 +1,5 @@
+rule_id,source,destination,port,protocol,action,description
+FW-001,0.0.0.0/0,Any,*,Any,allow,Legacy broad allow rule
+FW-002,0.0.0.0/0,192.168.10.5,3389,TCP,allow,Remote desktop to server
+FW-003,10.0.0.0/8,192.168.20.10,443,TCP,allow,Internal web app
+FW-004,0.0.0.0/0,192.168.30.50,1433,TCP,allow,

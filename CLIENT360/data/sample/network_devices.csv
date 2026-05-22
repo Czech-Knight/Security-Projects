@@ -1,0 +1,7 @@
+device_name,device_type,ip_address,subnet,owner,criticality
+firewall-01,Firewall,192.168.10.1,192.168.10.0/24,IT,Critical
+client-dc01,Server,192.168.10.5,192.168.10.0/24,IT,Critical
+printer-reception,Printer,192.168.10.50,192.168.10.0/24,Unknown,Low
+workstation-01,Workstation,192.168.10.80,192.168.10.0/24,Operations,Low
+workstation-02,Workstation,192.168.10.80,192.168.10.0/24,Operations,Low
+camera-nvr,IoT,192.168.20.20,192.168.10.0/24,Facilities,Medium

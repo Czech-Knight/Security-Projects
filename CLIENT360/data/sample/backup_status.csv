@@ -1,0 +1,5 @@
+server_name,backup_type,last_backup_time,status,retention_days,recovery_tested
+client-dc01,Image,2026-05-21T17:40:37.212797+00:00,Success,30,True
+file-server-01,File,2026-05-18T19:40:37.212797+00:00,Success,7,False
+sql-prod-01,Database,2026-05-21T22:40:37.212797+00:00,Failed,30,False
+web-prod-01,Image,2026-05-20T21:40:37.212797+00:00,Success,14,True

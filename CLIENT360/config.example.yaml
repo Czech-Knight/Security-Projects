@@ -1,0 +1,24 @@
+client:
+  name: "Demo Client Pty Ltd"
+  contact: "it-manager@example.com"
+  environment: "Sample MSP Client Environment"
+
+paths:
+  microsoft365_users: "data/sample/microsoft365_users.csv"
+  azure_nsg_rules: "data/sample/azure_nsg_rules.csv"
+  aws_security_groups: "data/sample/aws_security_groups.csv"
+  firewall_rules: "data/sample/firewall_rules.csv"
+  backup_status: "data/sample/backup_status.csv"
+  network_devices: "data/sample/network_devices.csv"
+  report_html: "reports/client360_report.html"
+  report_pdf: "reports/client360_report.pdf"
+  diagram_md: "reports/client360_architecture.md"
+
+risk_policy:
+  critical: 25
+  high: 15
+  medium: 8
+  low: 3
+  stale_account_days: 90
+  backup_warning_hours: 24
+  backup_critical_hours: 72
