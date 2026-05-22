@@ -71,7 +71,7 @@ Risk-Audit/
 
 ```bash
 git clone https://github.com/yourusername/msp-risk-audit-tool.git
-cd msp-risk-audit-tool
+cd Risk-Audit
 ```
 
 ### 2. Create virtual environment
@@ -180,4 +180,30 @@ Open the HTML report in a browser. You should see:
 - AWS boto3 for security groups
 - Datto/backup platform export CSV
 
+---
+## Screenshots
+
+### Dashboard Overview
+![Dashboard Overview](docs/screenshots/01-dashboard-overview.png)
+
+### Scan Input and Data Source Options
+![Scan Input](docs/screenshots/02-live-scan-input.png)
+
+### Risk Findings Table
+![Risk Findings](docs/screenshots/03-risk-findings-table.png)
+
+### Discovered Assets and Open Services
+![Assets and Services](docs/screenshots/04-assets-open-services.png)
+
+### Risk Summary Charts
+![Risk Charts](docs/screenshots/05-risk-charts.png)
+
+### Generated Client HTML Report
+![Generated Report](docs/screenshots/06-generated-html-report.png)
+
+### Generated Network Diagram
+![Network Diagram](docs/screenshots/07-network-diagram.png)
+
+### Project Code Structure
+![Code Structure](docs/screenshots/08-code-structure.png)
 
