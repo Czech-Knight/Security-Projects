@@ -1,7 +1,7 @@
 from pathlib import Path
 import sys
 import tempfile
-
+import streamlit_mermaid as stmd
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -152,4 +152,8 @@ with tab4:
         st.code(f"{html_path}\n{json_path}\n{mmd_path}")
 
     st.subheader("Mermaid Network Diagram")
-    st.code(diagram_text, language="mermaid")
+    try:
+        stmd.st_mermaid(diagram_text)
+    except Exception:
+        st.warning("Mermaid preview failed. Showing diagram source instead.")
+        st.code(diagram_text, language="mermaid")
