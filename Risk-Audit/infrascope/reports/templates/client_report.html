@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ client_name }} - Network Risk Assessment Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 32px; color: #1f2937; background: #f8fafc; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 28px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        h1, h2, h3 { color: #111827; }
+        .meta { color: #6b7280; margin-bottom: 24px; }
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+        .card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; background: #f9fafb; }
+        .card .label { color: #6b7280; font-size: 13px; }
+        .card .value { font-size: 24px; font-weight: bold; margin-top: 8px; }
+        table { width: 100%; border-collapse: collapse; margin: 16px 0 28px; }
+        th, td { padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: left; vertical-align: top; }
+        th { background: #f3f4f6; }
+        .sev-Critical { color: #991b1b; font-weight: bold; }
+        .sev-High { color: #b45309; font-weight: bold; }
+        .sev-Medium { color: #1d4ed8; font-weight: bold; }
+        .sev-Low { color: #047857; font-weight: bold; }
+        .diagram { white-space: pre-wrap; background: #111827; color: #e5e7eb; padding: 16px; border-radius: 10px; overflow-x: auto; }
+        .footer { color: #6b7280; font-size: 12px; margin-top: 28px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>{{ client_name }} - Network Risk Assessment Report</h1>
+    <div class="meta">Generated at: {{ generated_at }}</div>
+
+    <h2>Executive Summary</h2>
+    <p>
+        This report summarises the network assets discovered during an authorised Nmap-based inventory scan.
+        It highlights risky open services, assigns severity levels, and provides remediation guidance for support and security teams.
+    </p>
+
+    <div class="cards">
+        <div class="card"><div class="label">Risk Score</div><div class="value">{{ score.score }}/100</div></div>
+        <div class="card"><div class="label">Risk Level</div><div class="value">{{ score.risk_level }}</div></div>
+        <div class="card"><div class="label">Discovered Hosts</div><div class="value">{{ hosts|length }}</div></div>
+        <div class="card"><div class="label">Total Findings</div><div class="value">{{ score.total_findings }}</div></div>
+    </div>
+
+    <h2>Severity Breakdown</h2>
+    <table>
+        <tr><th>Critical</th><th>High</th><th>Medium</th><th>Low</th></tr>
+        <tr>
+            <td>{{ score.counts.Critical }}</td>
+            <td>{{ score.counts.High }}</td>
+            <td>{{ score.counts.Medium }}</td>
+            <td>{{ score.counts.Low }}</td>
+        </tr>
+    </table>
+
+    <h2>Discovered Asset Inventory</h2>
+    <table>
+        <tr><th>IP Address</th><th>Hostname</th><th>Status</th><th>OS Guess</th><th>Open Services</th></tr>
+        {% for host in hosts %}
+        <tr>
+            <td>{{ host.ip }}</td>
+            <td>{{ host.hostname or '-' }}</td>
+            <td>{{ host.status }}</td>
+            <td>{{ host.os_guess }}</td>
+            <td>
+                {% for svc in host.services %}
+                    {% if svc.state == 'open' %}
+                        {{ svc.port }}/{{ svc.protocol }} {{ svc.name }}{% if svc.product %} - {{ svc.product }} {{ svc.version }}{% endif %}<br>
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Risk Findings and Recommendations</h2>
+    <table>
+        <tr><th>Severity</th><th>Finding</th><th>Asset</th><th>Evidence</th><th>Business Impact</th><th>Recommendation</th></tr>
+        {% for finding in findings %}
+        <tr>
+            <td class="sev-{{ finding.severity }}">{{ finding.severity }}</td>
+            <td>{{ finding.title }}</td>
+            <td>{{ finding.asset }}</td>
+            <td>{{ finding.evidence }}</td>
+            <td>{{ finding.business_impact }}</td>
+            <td>{{ finding.recommendation }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Mermaid Network Diagram</h2>
+    <p>Paste this into a Mermaid renderer, GitHub Markdown preview, or Mermaid-compatible documentation tool.</p>
+    <div class="diagram">{{ diagram_text }}</div>
+
+    <div class="footer">
+        Ethical use notice: This report is generated for defensive assessment on authorised networks only.
+    </div>
+</div>
+</body>
+</html>

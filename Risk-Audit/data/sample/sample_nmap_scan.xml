@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nmaprun scanner="nmap" args="nmap -sV -O -oX sample.xml 192.168.10.0/24" start="1710000000" version="7.94">
+  <host>
+    <status state="up" reason="syn-ack" />
+    <address addr="192.168.10.10" addrtype="ipv4" />
+    <hostnames>
+      <hostname name="client-dc01" type="PTR" />
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="53"><state state="open" /><service name="domain" product="Microsoft DNS" version="10.0" /></port>
+      <port protocol="tcp" portid="80"><state state="open" /><service name="http" product="Microsoft IIS httpd" version="10.0" /></port>
+      <port protocol="tcp" portid="135"><state state="open" /><service name="msrpc" product="Microsoft Windows RPC" /></port>
+      <port protocol="tcp" portid="139"><state state="open" /><service name="netbios-ssn" product="Microsoft Windows netbios-ssn" /></port>
+      <port protocol="tcp" portid="445"><state state="open" /><service name="microsoft-ds" product="Windows Server SMB" /></port>
+      <port protocol="tcp" portid="3389"><state state="open" /><service name="ms-wbt-server" product="Microsoft Terminal Services" /></port>
+    </ports>
+    <os><osmatch name="Microsoft Windows Server 2019" accuracy="95" /></os>
+  </host>
+
+  <host>
+    <status state="up" reason="syn-ack" />
+    <address addr="192.168.10.20" addrtype="ipv4" />
+    <hostnames>
+      <hostname name="client-web01" type="PTR" />
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="22"><state state="open" /><service name="ssh" product="OpenSSH" version="8.9" /></port>
+      <port protocol="tcp" portid="80"><state state="open" /><service name="http" product="Apache httpd" version="2.4.52" /></port>
+      <port protocol="tcp" portid="443"><state state="open" /><service name="https" product="Apache httpd" version="2.4.52" /></port>
+      <port protocol="tcp" portid="8080"><state state="open" /><service name="http-proxy" product="Jetty" version="9.4" /></port>
+    </ports>
+    <os><osmatch name="Linux 5.x" accuracy="90" /></os>
+  </host>
+
+  <host>
+    <status state="up" reason="syn-ack" />
+    <address addr="192.168.10.30" addrtype="ipv4" />
+    <hostnames>
+      <hostname name="client-db01" type="PTR" />
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="3306"><state state="open" /><service name="mysql" product="MySQL" version="8.0" /></port>
+      <port protocol="tcp" portid="22"><state state="open" /><service name="ssh" product="OpenSSH" version="8.4" /></port>
+    </ports>
+    <os><osmatch name="Ubuntu Linux" accuracy="91" /></os>
+  </host>
+
+  <host>
+    <status state="up" reason="syn-ack" />
+    <address addr="192.168.10.40" addrtype="ipv4" />
+    <hostnames>
+      <hostname name="legacy-nas01" type="PTR" />
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="21"><state state="open" /><service name="ftp" product="vsftpd" version="2.3.4" /></port>
+      <port protocol="tcp" portid="23"><state state="open" /><service name="telnet" product="BusyBox telnetd" /></port>
+      <port protocol="tcp" portid="445"><state state="open" /><service name="microsoft-ds" product="Samba smbd" version="3.x" /></port>
+    </ports>
+    <os><osmatch name="Embedded Linux / NAS" accuracy="87" /></os>
+  </host>
+</nmaprun>
