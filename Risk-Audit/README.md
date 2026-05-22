@@ -36,7 +36,7 @@ This project was built to demonstrate practical experience in:
 ## Project Structure
 
 ```text
-msp-risk-audit-tool/
+Risk-Audit/
 ├── app/
 │   └── dashboard.py
 ├── infrascope/
