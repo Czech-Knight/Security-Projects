@@ -118,9 +118,7 @@ Use `.env.example` and `config.example.yaml` as templates. Do not commit real se
 
 ---
 
-## What To Show Employers
-
-Recommended GitHub screenshots:
+## Screenshots
 
 1. Dashboard overview
 2. Microsoft 365 audit table
