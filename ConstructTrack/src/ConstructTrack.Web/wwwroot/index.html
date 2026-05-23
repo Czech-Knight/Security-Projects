@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ConstructTrack BIM Issue Portal</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">Construction and Infrastructure Dashboard</p>
+      <h1>ConstructTrack BIM Issue Portal</h1>
+      <p class="subtitle">Track project progress, BIM-linked assets, site issues, priorities, and team ownership from one full-stack web platform.</p>
+    </div>
+    <div class="status-pill" id="healthStatus">Checking service</div>
+  </header>
+
+  <main class="layout">
+    <section class="panel hero-panel">
+      <div class="hero-copy">
+        <p class="eyebrow">Live Project</p>
+        <h2 id="projectName">Loading project</h2>
+        <p id="projectDescription">Fetching project information...</p>
+        <div class="project-meta" id="projectMeta"></div>
+      </div>
+      <div class="progress-box">
+        <span>Project Progress</span>
+        <strong id="projectProgress">0%</strong>
+        <div class="progress-track"><div id="progressFill"></div></div>
+      </div>
+    </section>
+
+    <section class="stats-grid" id="statsGrid">
+      <article class="stat-card"><span>Total Issues</span><strong id="totalIssues">0</strong></article>
+      <article class="stat-card"><span>Open</span><strong id="openIssues">0</strong></article>
+      <article class="stat-card"><span>High/Critical</span><strong id="highIssues">0</strong></article>
+      <article class="stat-card"><span>Overdue</span><strong id="overdueIssues">0</strong></article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">BIM Asset Register</p>
+            <h2>Asset Coordination View</h2>
+          </div>
+          <button class="ghost-button" id="refreshButton">Refresh</button>
+        </div>
+        <div class="asset-map" id="assetMap"></div>
+        <div class="asset-list" id="assetList"></div>
+      </article>
+
+      <article class="panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">New Issue</p>
+            <h2>Create Site Issue</h2>
+          </div>
+        </div>
+        <form id="issueForm" class="form-grid">
+          <label>
+            Title
+            <input name="title" required maxlength="100" placeholder="Example: Service clash near grid B4">
+          </label>
+          <label>
+            Asset
+            <select name="assetId" id="assetSelect"></select>
+          </label>
+          <label>
+            Priority
+            <select name="priority">
+              <option>Low</option>
+              <option selected>Medium</option>
+              <option>High</option>
+              <option>Critical</option>
+            </select>
+          </label>
+          <label>
+            Assigned To
+            <input name="assignedTo" required placeholder="Team or person">
+          </label>
+          <label>
+            Location
+            <input name="location" required placeholder="Level, zone, grid, or site area">
+          </label>
+          <label>
+            Due Date
+            <input name="dueDate" type="date">
+          </label>
+          <label class="full-width">
+            Description
+            <textarea name="description" required rows="4" placeholder="Describe the issue, expected impact, and next action."></textarea>
+          </label>
+          <label class="full-width">
+            Tags
+            <input name="tags" placeholder="BIM, Coordination, Safety">
+          </label>
+          <button type="submit" class="primary-button">Add Issue</button>
+          <p class="form-message" id="formMessage"></p>
+        </form>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Issue Register</p>
+          <h2>Project Issues and Workflow</h2>
+        </div>
+        <div class="filters">
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option>Open</option>
+            <option>In Progress</option>
+            <option>Blocked</option>
+            <option>Resolved</option>
+            <option>Closed</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="">All Priorities</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Critical</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Issue</th>
+              <th>Asset</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Owner</th>
+              <th>Due</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="issueTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

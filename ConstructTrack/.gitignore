@@ -1,0 +1,33 @@
+# Build output
+bin/
+obj/
+out/
+publish/
+
+# IDE
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Docker volumes / local data
+mongo-data/
+
+# Node or frontend temporary files
+node_modules/
+dist/
