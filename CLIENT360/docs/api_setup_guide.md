@@ -51,9 +51,3 @@ AWS_PROFILE=client360-readonly
 AWS_REGION=ap-southeast-2
 ```
 
-## Security Rules
-
-- Never commit `.env`.
-- Never commit real client data.
-- Use read-only permissions wherever possible.
-- Use test tenants/accounts when demonstrating publicly.
