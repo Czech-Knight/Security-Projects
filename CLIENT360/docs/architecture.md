@@ -19,7 +19,7 @@ flowchart TD
     RiskEngine --> Documentation
 ```
 
-## Why this design is useful for an MSP role
+## Why this design is useful 
 
 - It supports authorised client environment documentation.
 - It avoids destructive or offensive testing.
