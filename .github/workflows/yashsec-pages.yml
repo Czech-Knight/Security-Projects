@@ -1,0 +1,71 @@
+name: Deploy YashSec Autopilot Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "YashSec-Autopilot/site/**"
+      - "YashSec-Autopilot/docs/screenshots/**"
+      - ".github/workflows/yashsec-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: yashsec-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate runtime links
+        env:
+          REPOSITORY: ${{ github.repository }}
+          LIVE_DEMO_URL: ${{ vars.YASHSEC_LIVE_DEMO_URL }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          project_dir = Path("YashSec-Autopilot")
+          config = {
+              "githubUrl": (
+                  f"https://github.com/{os.environ['REPOSITORY']}"
+                  "/tree/main/YashSec-Autopilot"
+              ),
+              "liveDemoUrl": os.environ.get("LIVE_DEMO_URL", "").strip(),
+          }
+
+          output = project_dir / "site" / "runtime-config.js"
+          output.write_text(
+              "window.YASHSEC_SITE_CONFIG = "
+              + json.dumps(config)
+              + ";\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload YashSec website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: YashSec-Autopilot/site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
