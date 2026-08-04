@@ -185,20 +185,6 @@ data/                  Empty runtime folders; contents ignored by Git
 
 The prepared package was validated with the test suite, Python compilation, frontend JavaScript syntax checking, demo-mode startup, seeded demo API checks, and a repository hygiene scan. Re-run the commands after every material change.
 
-## Upload to GitHub
-
-```powershell
-git init
-git add .
-git status --short
-git commit -m "Initial YashSec Autopilot release"
-git branch -M main
-git remote add origin https://github.com/<YOUR-USERNAME>/<YOUR-REPOSITORY>.git
-git push -u origin main
-```
-
-Before committing, confirm that `.env`, `.venv`, `data/yashsec.db`, reports, runtime logs, cloned targets, and downloaded scanner executables are absent from `git status`.
-
 ## Known limitations
 
 - The public deployment is a read-only portfolio demo, not the full local scanner workspace.
