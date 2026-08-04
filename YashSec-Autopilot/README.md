@@ -42,7 +42,13 @@ The public demo is intentionally not a free internet-facing penetration-testing 
 - Public read-only demo seeding with an intentionally vulnerable bundled target.
 - Professional screenshots, GitHub Pages landing site, Docker files, Windows scripts, CI, CodeQL, Dependabot, and deployment documentation.
 - Sanitised source package with virtual environments, runtime databases, logs, cloned repositories, local binaries, caches, and `.env` removed.
+## Live Demo
 
+Explore the restricted read-only demo of YashSec Autopilot:
+
+[![Launch Live Demo](https://img.shields.io/badge/Launch-Live%20Demo-00e5c3?style=for-the-badge&logo=render&logoColor=white)](https://czech-knight.github.io/Security-Projects/)
+
+> The hosted version uses sample data and disables repository cloning, real scanner execution, dynamic testing, scheduling, and configuration changes. Full functionality is available in the local installation.
 ## Quick start on Windows 11
 
 ### Requirements
