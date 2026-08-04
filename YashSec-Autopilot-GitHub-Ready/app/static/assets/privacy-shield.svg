@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 240" role="img" aria-labelledby="t d"><title id="t">Local protection shield</title><desc id="d">A restrained shield and evidence nodes representing local-first security.</desc>
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#48e2c6" stop-opacity=".26"/><stop offset="1" stop-color="#48e2c6" stop-opacity=".03"/></linearGradient></defs>
+<g fill="none" stroke="#2c3b4c" stroke-width="1"><path d="M26 54h94M242 54h92M28 186h90M242 186h90"/><circle cx="28" cy="54" r="4"/><circle cx="332" cy="54" r="4"/><circle cx="28" cy="186" r="4"/><circle cx="332" cy="186" r="4"/></g>
+<path d="M180 28 270 60v63c0 54-35 86-90 103-55-17-90-49-90-103V60z" fill="url(#g)" stroke="#48e2c6" stroke-width="3"/>
+<path d="m136 123 29 29 61-67" fill="none" stroke="#edf4fa" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#48e2c6"><circle cx="90" cy="92" r="4"/><circle cx="270" cy="92" r="4"/><circle cx="110" cy="168" r="4"/><circle cx="250" cy="168" r="4"/></g>
+<g stroke="#48e2c6" stroke-opacity=".45"><path d="m94 92 48 17M266 92l-48 17M114 168l39-24M246 168l-39-24"/></g>
+</svg>

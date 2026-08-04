@@ -1,0 +1,48 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/screenshots/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate runtime links
+        env:
+          REPOSITORY: ${{ github.repository }}
+          LIVE_DEMO_URL: ${{ vars.YASHSEC_LIVE_DEMO_URL }}
+        run: |
+          python - <<'PY'
+          import json, os
+          config = {
+              "githubUrl": f"https://github.com/{os.environ['REPOSITORY']}",
+              "liveDemoUrl": os.environ.get("LIVE_DEMO_URL", "").strip(),
+          }
+          with open("site/runtime-config.js", "w", encoding="utf-8") as handle:
+              handle.write("window.YASHSEC_SITE_CONFIG = " + json.dumps(config) + ";\n")
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

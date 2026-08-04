@@ -1,0 +1,36 @@
+YashSec Autopilot v1.0.0 RC1 hardened-source verification
+Verification date: 2026-08-04
+
+PASS - python -m compileall -q app airllm_worker
+PASS - python -m pytest -q (18 tests)
+PASS - node --check app/static/app.js
+PASS - all bundled SVG assets parse as valid XML
+PASS - v0.1.1-style SQLite database migrates in place to schema v6
+PASS - pre-migration SQLite online backup is recorded and readable
+PASS - first-run Owner setup and authenticated login/logout smoke flow
+PASS - local demo repository registration and deterministic Node.js/port detection
+PASS - built-in Quick scan completed with 5 findings on the bundled demo
+PASS - JSON, HTML and DOCX report generation
+PASS - audit hash-chain verification after the smoke flow
+PASS - manual SQLite online backup and integrity check
+PASS - authenticated API secret is absent from SQLite metadata and API output
+PASS - remote dynamic target and embedded-credential URL rejection by default
+PASS - redirect destination revalidation
+PASS - safe ZIP extraction and traversal ZIP rejection
+PASS - CLI doctor completed and reported optional capabilities independently
+
+NOT EXECUTED IN THIS ENVIRONMENT
+- Rust/Tauri Windows x64 compilation (`cargo` is unavailable here)
+- PyInstaller-produced Windows executable launch
+- Inno Setup interactive/silent installation, upgrade and uninstall
+- Windows WebView2, single-instance and process-tree lifecycle validation
+- Windows scaling, notifications, high-contrast and reduced-motion manual validation
+- Production code signing and signed update channel
+
+Release position: v1.0.0 RC1 Hardened Source + Windows Build Kit.
+Do not label it v1.0 Stable until the Windows release checklist passes.
+
+PASS - public demo seed is idempotent and viewer-only
+PASS - remote Ollama requires HTTPS, explicit host allow-list and server-side key
+PASS - repository hygiene scan found no prohibited local artifacts or high-confidence credentials
+PASS - fresh demo screenshots generated from mocked seeded API responses

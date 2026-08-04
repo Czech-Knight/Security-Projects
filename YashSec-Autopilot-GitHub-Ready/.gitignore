@@ -1,0 +1,57 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime data
+/data/*
+!/data/repositories/
+!/data/reports/
+!/data/runtime/
+!/data/backups/
+!/data/secrets/
+!/data/logs/
+!/data/repositories/.gitkeep
+!/data/reports/.gitkeep
+!/data/runtime/.gitkeep
+!/data/backups/.gitkeep
+!/data/secrets/.gitkeep
+!/data/logs/.gitkeep
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.log
+
+# Locally downloaded third-party binaries
+/tools/bin/*
+!/tools/bin/.gitkeep
+
+# Desktop/build output
+/desktop/node_modules/
+/desktop/src-tauri/target/
+/installer/output/
+
+# Editors/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use YashSec Autopilot in academic or professional work, please cite this software."
+title: "YashSec Autopilot"
+type: software
+authors:
+  - given-names: Yash
+version: 1.0.0-rc1
+date-released: 2026-08-04
+license: MIT

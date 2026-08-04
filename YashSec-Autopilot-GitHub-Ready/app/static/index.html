@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0B1019">
+  <title>YashSec Autopilot</title>
+  <link rel="icon" href="/static/logo.svg">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div id="setupView" class="auth-view hidden" aria-live="polite">
+    <div class="auth-grid"></div>
+    <section class="wizard-card">
+      <div class="wizard-brand"><div class="brand-hex"><svg class="brand-icon" aria-hidden="true"><use href="/static/icons.svg#shield"></use></svg></div><div><span>YASHSEC AUTOPILOT</span><strong>First-run setup</strong></div></div>
+      <div class="step-track" aria-label="Setup progress">
+        <span class="active" data-step-dot="1">1</span><i></i><span data-step-dot="2">2</span><i></i><span data-step-dot="3">3</span><i></i><span data-step-dot="4">4</span>
+      </div>
+      <div id="setupStep1" class="wizard-step">
+        <div class="eyebrow">01 / LOCAL-FIRST PROMISE</div>
+        <h1>Your security workspace stays under your control.</h1>
+        <p>Repository code, scan evidence and local AI context remain on this device by default. External providers are off until you deliberately configure and approve them.</p>
+        <div class="setup-visual"><img src="/static/assets/privacy-shield.svg" alt="Local protection shield and evidence nodes"><span>Local evidence. Explicit approvals. Honest coverage.</span></div>
+        <div class="promise-grid">
+          <article><b>Local processing</b><span>Backend binds only to 127.0.0.1.</span></article>
+          <article><b>Honest coverage</b><span>Skipped and failed stages stay visible.</span></article>
+          <article><b>Approval gates</b><span>Commands, risk acceptance and patches require confirmation.</span></article>
+        </div>
+        <button class="button primary" data-next-step="2">Continue</button>
+      </div>
+      <form id="setupOwnerForm" class="wizard-step hidden">
+        <div class="eyebrow">02 / LOCAL OWNER</div>
+        <h1>Create the first local owner account.</h1>
+        <p>No default password is generated. This account controls users, high-risk actions, backups and application security settings.</p>
+        <label>Username<input id="setupUsername" autocomplete="username" value="yash" required minlength="3"></label>
+        <label>Password<input id="setupPassword" type="password" autocomplete="new-password" required minlength="12" placeholder="At least 12 characters"></label>
+        <label>Confirm password<input id="setupConfirmPassword" type="password" autocomplete="new-password" required minlength="12"></label>
+        <div id="setupMessage" class="inline-alert hidden"></div>
+        <div class="wizard-actions"><button class="button quiet" type="button" data-next-step="1">Back</button><button class="button primary" type="submit">Create owner</button></div>
+      </form>
+      <div id="setupStep3" class="wizard-step hidden">
+        <div class="eyebrow">03 / CAPABILITY CHECK</div>
+        <h1>Connect optional security capabilities.</h1>
+        <p>A missing optional tool never breaks the core application. It only reduces the coverage of profiles that depend on it.</p>
+        <div id="setupToolSummary" class="tool-compact-list loading-block">Checking installed tools...</div>
+        <button class="button primary" data-next-step="4">Continue</button>
+      </div>
+      <div id="setupStep4" class="wizard-step hidden">
+        <div class="eyebrow">04 / READY</div>
+        <h1>YashSec is ready for its first repository.</h1>
+        <div id="setupReadySummary" class="summary-callout"></div>
+        <button id="finishSetup" class="button primary">Enter workspace</button>
+      </div>
+      <footer>Version <span data-version>1.0.0-rc1</span> · Local-first Windows security workspace</footer>
+    </section>
+  </div>
+
+  <div id="loginView" class="auth-view hidden">
+    <div class="auth-grid"></div>
+    <section class="login-card">
+      <div class="brand-hex large"><svg class="brand-icon" aria-hidden="true"><use href="/static/icons.svg#shield"></use></svg></div>
+      <div class="eyebrow">QUIET POWER / LOCAL SECURITY</div>
+      <h1>YashSec Autopilot</h1>
+      <p>Evidence-first repository scanning, authenticated API testing, local AI assistance and professional reporting.</p>
+      <form id="loginForm" class="stack">
+        <label>Username<input id="loginUsername" autocomplete="username" required></label>
+        <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="button primary full" type="submit">Enter workspace</button>
+        <button id="demoLogin" class="button quiet full hidden" type="button">Open read-only live demo</button>
+        <div id="demoLoginNotice" class="teaching-note warning hidden"><b>Public portfolio mode</b><span>Only the bundled sample repository is available. Process execution, uploads, arbitrary scans and configuration changes are disabled. AI prompts may be sent to the configured Ollama Cloud endpoint.</span></div>
+        <div id="loginMessage" class="inline-alert hidden"></div>
+      </form>
+      <div class="privacy-line"><span class="status-dot success"></span><span id="loginPrivacyText">Backend is local. No source code is sent externally by default.</span></div>
+      <footer>Version <span data-version>1.0.0-rc1</span> · <span id="backendState">Checking backend</span></footer>
+    </section>
+  </div>
+
+  <div id="appShell" class="app-shell hidden">
+    <header class="titlebar">
+      <div class="titlebar-drag"><div class="brand-hex tiny"><svg class="brand-icon" aria-hidden="true"><use href="/static/icons.svg#shield"></use></svg></div><strong>YashSec Autopilot</strong><span id="projectBreadcrumb">Security Overview</span></div>
+      <button id="commandButton" class="command-entry" title="Open command centre (Ctrl+K)"><span>Search or run a command</span><kbd>Ctrl K</kbd></button>
+      <div class="title-actions"><span id="privacyBadge" class="privacy-badge"><i></i>Local protected</span><button id="themeToggle" class="icon-button" title="Toggle theme" aria-label="Toggle colour theme"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#theme"></use></svg></button></div>
+    </header>
+
+    <aside id="navigation" class="navigation">
+      <div class="nav-brand"><div class="brand-hex"><svg class="brand-icon" aria-hidden="true"><use href="/static/icons.svg#shield"></use></svg></div><div><b>YashSec</b><span>Autopilot</span></div></div>
+      <nav>
+        <button class="nav-item active" data-view="overview"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#overview"></use></svg><span>Overview</span></button>
+        <button class="nav-item" data-view="projects"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#projects"></use></svg><span>Projects</span></button>
+        <button class="nav-item" data-view="scans"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#scans"></use></svg><span>Scans</span></button>
+        <button class="nav-item" data-view="findings"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#findings"></use></svg><span>Findings</span></button>
+        <button class="nav-item" data-view="assistant"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#assistant"></use></svg><span>AI Assistant</span></button>
+        <button class="nav-item" data-view="reports"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#reports"></use></svg><span>Reports</span></button>
+        <button class="nav-item permission-audit-read" data-view="audit"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#audit"></use></svg><span>Audit Logs</span></button>
+        <button class="nav-item" data-view="tools"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#tools"></use></svg><span>Tool Manager</span></button>
+        <button class="nav-item" data-view="settings"><svg class="nav-icon" aria-hidden="true"><use href="/static/icons.svg#settings"></use></svg><span>Settings</span></button>
+      </nav>
+      <div class="nav-status">
+        <div><span class="status-dot success"></span><span><b>Local processing</b><small id="scannerHealthText">Checking scanner health</small></span></div>
+        <div><span class="status-dot" id="aiStatusDot"></span><span><b>Local AI</b><small id="aiStatusText">Not checked</small></span></div>
+      </div>
+      <div class="profile-block"><div id="profileAvatar">Y</div><div><b id="profileName">User</b><small id="profileRole">Role</small></div><button id="logoutButton" class="icon-button" title="Sign out" aria-label="Sign out"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#logout"></use></svg></button></div>
+    </aside>
+
+    <main class="workspace">
+      <header class="page-header">
+        <div><div id="pageEyebrow" class="eyebrow">SECURITY WORKSPACE</div><h1 id="pageTitle">Overview</h1><p id="pageSubtitle">What needs attention and what coverage was achieved.</p></div>
+        <div id="pageActions" class="page-actions"><button id="askAiTop" class="button quiet"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#assistant"></use></svg>Ask local AI</button><button id="newScanTop" class="button primary"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#plus"></use></svg>New scan</button></div>
+      </header>
+      <div id="globalBanner" class="banner hidden"></div>
+      <section id="content" class="content" aria-live="polite"></section>
+    </main>
+
+    <aside id="inspector" class="inspector" aria-label="Local AI assistant">
+      <header><div><div class="eyebrow">PRIVATE LOCAL AI</div><h2>Security copilot</h2></div><button id="inspectorClose" class="icon-button" aria-label="Close AI assistant"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+      <div id="aiContextBar" class="context-bar"><span class="context-chip">No project context</span></div>
+      <div class="inspector-options"><select id="assistantRepo"></select><select id="assistantProvider"><option value="ollama">Ollama</option><option value="airllm">AirLLM</option></select></div>
+      <div id="assistantMessages" class="assistant-messages"><article class="ai-message"><b>Local assistant</b><p>Select a project, then ask about evidence, architecture, authentication, logging, remediation or a scanner failure.</p></article></div>
+      <div class="quick-prompts"><button>Explain evidence</button><button>Suggest fix</button><button>Check false positive</button></div>
+      <form id="assistantForm" class="assistant-compose"><textarea id="assistantQuestion" rows="3" placeholder="Ask a project-specific security question..."></textarea><button class="button primary" type="submit">Send</button></form>
+    </aside>
+  </div>
+
+  <div id="commandPalette" class="command-overlay hidden" role="dialog" aria-modal="true">
+    <section class="command-palette"><header><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#search"></use></svg><input id="commandSearch" placeholder="Search projects, screens and actions"><kbd>Esc</kbd></header><div id="commandResults"></div></section>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+  <section id="projectModal" class="modal hidden" role="dialog" aria-modal="true">
+    <header><div><div class="eyebrow">ADD PROJECT</div><h2>Register a repository</h2></div><button class="icon-button modal-close" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+    <div class="source-tabs"><button class="active" data-source-tab="local">Local folder</button><button data-source-tab="git">Git repository</button><button data-source-tab="zip">ZIP archive</button></div>
+    <form id="projectForm" class="modal-body stack">
+      <input id="projectSourceType" type="hidden" value="local">
+      <label>Project name <small>optional</small><input id="projectName" placeholder="Payment API"></label>
+      <label id="projectSourceLabel">Folder path<div class="input-action"><input id="projectSource" placeholder="C:\Projects\PaymentApi"><button id="browseFolder" class="button quiet compact" type="button">Browse</button></div></label>
+      <label id="projectBranchLabel" class="hidden">Branch <small>optional</small><input id="projectBranch" placeholder="main"></label>
+      <label id="projectZipLabel" class="file-drop hidden">ZIP archive<input id="projectZip" type="file" accept=".zip"><span>Drop a ZIP here or choose a file</span><small>Safe extraction preview · 1 GB archive limit · no symbolic links</small></label>
+      <div class="teaching-note"><b>Control promise</b><span>YashSec inspects the repository locally. Detected commands are shown with their source and never run silently.</span></div>
+      <button class="button primary" type="submit">Add and inspect</button>
+    </form>
+  </section>
+
+  <section id="scanModal" class="modal wide hidden" role="dialog" aria-modal="true">
+    <header><div><div class="eyebrow">CONTROLLED POWER</div><h2>Configure security scan</h2></div><button class="icon-button modal-close" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+    <form id="scanForm" class="modal-body stack">
+      <label>Project<select id="scanRepository"></select></label>
+      <div class="profile-cards" id="scanProfiles">
+        <button type="button" data-profile="quick"><b>Quick</b><span>Built-in + Semgrep + Gitleaks</span><small>Fast developer feedback</small></button>
+        <button type="button" class="active" data-profile="standard"><b>Standard</b><span>Static + secrets + dependencies</span><small>Recommended local review</small></button>
+        <button type="button" data-profile="full"><b>Full</b><span>All available + runtime API</span><small>Release or audit review</small></button>
+        <button type="button" data-profile="custom"><b>Custom</b><span>Select tools and runtime</span><small>Expert workflow</small></button>
+      </div>
+      <input id="scanProfile" type="hidden" value="standard">
+      <div class="two-col"><label>API URL <small>optional / local by default</small><input id="scanApiUrl" placeholder="http://127.0.0.1:4000"></label><label>OpenAPI file or URL <small>optional / detected</small><input id="scanOpenApi" placeholder="openapi.yaml"></label></div>
+      <label>Authentication profile <small>optional</small><select id="scanAuthProfile"><option value="">Anonymous</option></select></label>
+      <div><div class="field-title">Scanner coverage</div><div id="scannerGrid" class="scanner-grid"></div></div>
+      <div id="startupPanel" class="approval-panel hidden"><div class="approval-icon">!</div><div><b>Detected startup command</b><select id="startupCandidate"></select><code id="startupPreview"></code><label class="checkline"><input id="confirmStartup" type="checkbox">I reviewed this exact command and authorise local execution for this scan.</label></div></div>
+      <div class="teaching-note warning"><b>No fake certainty</b><span>Unavailable tools and runtime stages remain visible as partial coverage. ZAP baseline is passive by default.</span></div>
+      <button class="button primary" type="submit">Launch scan</button>
+    </form>
+  </section>
+
+  <section id="findingModal" class="modal xwide hidden" role="dialog" aria-modal="true">
+    <header><div><div class="eyebrow">EVIDENCE FIRST</div><h2 id="findingModalTitle">Finding detail</h2></div><button class="icon-button modal-close" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+    <div id="findingModalBody" class="modal-body"></div>
+  </section>
+
+  <section id="authProfileModal" class="modal hidden" role="dialog" aria-modal="true">
+    <header><div><div class="eyebrow">AUTHENTICATED API</div><h2>Create authentication profile</h2></div><button class="icon-button modal-close" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+    <form id="authProfileForm" class="modal-body stack">
+      <input id="authProfileRepositoryId" type="hidden">
+      <label>Profile name<input id="authProfileName" placeholder="Standard user" required></label>
+      <label>Authentication type<select id="authProfileType"><option value="bearer">Bearer token</option><option value="api_key_header">API key header</option><option value="api_key_query">API key query parameter</option><option value="basic">HTTP Basic</option><option value="oauth_client_credentials">OAuth 2.0 client credentials</option><option value="cookie">Session cookie</option></select></label>
+      <div id="authProfileFields"></div>
+      <div class="teaching-note"><b>Protected storage</b><span>Secret values are stored through Windows DPAPI in the packaged application and are never returned by the API.</span></div>
+      <button class="button primary" type="submit">Save profile</button>
+    </form>
+  </section>
+
+  <section id="reauthModal" class="modal small hidden" role="dialog" aria-modal="true">
+    <header><div><div class="eyebrow">STEP-UP CONFIRMATION</div><h2>Confirm your password</h2></div><button class="icon-button modal-close" aria-label="Close dialog"><svg class="icon" aria-hidden="true"><use href="/static/icons.svg#close"></use></svg></button></header>
+    <form id="reauthForm" class="modal-body stack"><p id="reauthReason">This action requires fresh verification.</p><label>Password<input id="reauthPassword" type="password" autocomplete="current-password" required></label><button class="button danger" type="submit">Confirm action</button></form>
+  </section>
+
+  <div id="toastArea" class="toast-area" aria-live="polite"></div>
+  <script src="/static/app.js?v=rc1-runtime-login-hotfix" defer></script>
+</body>
+</html>

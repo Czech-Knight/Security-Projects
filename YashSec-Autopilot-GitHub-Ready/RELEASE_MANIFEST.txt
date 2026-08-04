@@ -1,0 +1,60 @@
+YASHSEC AUTOPILOT v1.0.0 RC1
+Hardened Source + Windows Build Kit
+Prepared for Yash
+Verification date: 2026-08-04
+
+DELIVERED
+- Hardened FastAPI backend and existing scanner workflow
+- First-run Owner setup; no fixed default account
+- Argon2id/PBKDF2 migration, throttling, lockout and hashed sessions
+- Deny-by-default RBAC, granular permissions and project memberships
+- Authenticated API profiles with separated protected secret material
+- Loopback target policy, redirect revalidation and log redaction
+- Safer command execution and scan-started process cleanup
+- Stage-level honest coverage and partial-completion outcomes
+- SQLite schema v6, v0.1.1 migration, integrity, backup and restore controls
+- Tamper-evident audit hash chain
+- Quiet Power hybrid dark/light UI, reduced motion and custom SVG graphics
+- Local Ollama, allow-listed Ollama Cloud and optional AirLLM integration
+- Read-only public portfolio demo and GitHub Pages site
+- Repository sanitisation and hygiene checks
+- DOCX, HTML and JSON reports
+- PyInstaller backend build specification
+- Tauri Windows shell source
+- Inno Setup installer source
+- Windows GitHub Actions build and smoke-test workflow
+- First-run, external-tools, AI, Windows-build and release-validation guides
+
+OBSERVED SOURCE VERIFICATION
+- Python compile: PASS
+- Automated tests: 18 PASS
+- JavaScript syntax: PASS
+- SVG XML validation: PASS
+- v0.1.1 migration fixture: PASS
+- End-to-end local smoke: PASS
+- Demo findings: 5
+- Report formats: JSON, HTML and DOCX PASS
+- Backup: PASS
+- Audit chain: PASS
+- CLI doctor: PASS
+
+WINDOWS VALIDATION BOUNDARY
+The current execution environment is not Windows and does not contain Cargo/Rust or Inno Setup.
+The included Windows build, portable executable and installer definitions are therefore build-ready
+source, not a claim that the produced Windows binaries have already been run here.
+
+KNOWN RC1 BOUNDARIES
+- Automatic source patch application and proven rollback remain deferred.
+- Authenticated profiles are applied to safe dynamic checks and Schemathesis; passive ZAP does not yet inherit those headers.
+- Cancellation is cooperative between stages; a running third-party process may finish before cancellation returns.
+- Process-tree cleanup is implemented; Windows Job Object CPU/memory quotas are not.
+- No enterprise OIDC/SAML, multi-machine collaboration, production code signing or signed updater.
+- Remote active scanning remains disabled.
+
+WINDOWS BUILD ENTRY POINTS
+- scripts\build-desktop.ps1
+- scripts\build-installer.ps1
+- .github\workflows\windows-release.yml
+
+AUTHORITATIVE CHECKLIST
+- docs\RELEASE_VALIDATION_CHECKLIST.md

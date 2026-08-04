@@ -1,0 +1,80 @@
+name: Windows Release Candidate
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable-x86_64-pc-windows-msvc
+      - name: Install application and build dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-build.txt
+      - name: Python compile and tests
+        shell: pwsh
+        run: |
+          python -m compileall -q app airllm_worker
+          python -m pytest -q
+      - name: Build backend and desktop portable package
+        shell: pwsh
+        run: .\scripts\build-desktop.ps1
+      - name: Backend executable smoke test
+        shell: pwsh
+        run: |
+          $token = [Guid]::NewGuid().ToString("N")
+          $data = Join-Path $env:RUNNER_TEMP "yashsec-smoke"
+          $process = Start-Process -FilePath ".\dist\desktop\YashSecBackend.exe" -ArgumentList "--host","127.0.0.1","--port","18787","--transport-token",$token,"--data-dir",$data -PassThru
+          try {
+            $healthy = $false
+            for ($i=0; $i -lt 60; $i++) {
+              Start-Sleep -Milliseconds 250
+              try {
+                $result = Invoke-RestMethod -Uri "http://127.0.0.1:18787/api/health" -Headers @{"X-YashSec-Transport"=$token}
+                if ($result.status -in @("ok","degraded")) { $healthy = $true; break }
+              } catch {}
+            }
+            if (-not $healthy) { throw "Packaged backend did not become healthy." }
+          } finally {
+            Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+          }
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Build installer
+        shell: pwsh
+        run: .\scripts\build-installer.ps1
+      - name: Silent install smoke test
+        shell: pwsh
+        run: |
+          $installer = Resolve-Path ".\dist\installer\YashSec-Autopilot-Setup-x64.exe"
+          $p = Start-Process $installer -ArgumentList "/VERYSILENT","/NORESTART","/SUPPRESSMSGBOXES" -PassThru -Wait
+          if ($p.ExitCode -ne 0) { throw "Silent installation failed: $($p.ExitCode)" }
+          if (-not (Test-Path "$env:ProgramFiles\YashSec Autopilot\YashSec Autopilot.exe")) { throw "Installed desktop executable missing." }
+          if (-not (Test-Path "$env:ProgramFiles\YashSec Autopilot\YashSecBackend.exe")) { throw "Installed backend executable missing." }
+      - name: Archive portable package
+        shell: pwsh
+        run: Compress-Archive -Path ".\dist\desktop\*" -DestinationPath ".\dist\YashSec-Autopilot-v1.0.0-RC1-Portable-x64.zip" -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: YashSec-Autopilot-Windows-x64
+          if-no-files-found: error
+          path: |
+            dist/YashSec-Autopilot-v1.0.0-RC1-Portable-x64.zip
+            dist/installer/YashSec-Autopilot-Setup-x64.exe

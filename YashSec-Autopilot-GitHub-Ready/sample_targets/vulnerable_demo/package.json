@@ -1,0 +1,7 @@
+{
+  "name": "yashsec-vulnerable-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"start": "node src/app.js"},
+  "description": "Intentionally vulnerable local demo for YashSec Autopilot"
+}

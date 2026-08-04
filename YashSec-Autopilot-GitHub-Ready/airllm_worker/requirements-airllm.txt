@@ -1,0 +1,4 @@
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+airllm>=2.0
+bitsandbytes>=0.43
