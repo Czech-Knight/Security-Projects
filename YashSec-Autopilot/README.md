@@ -101,21 +101,6 @@ YASHSEC_OLLAMA_MODEL=qwen3:8b docker compose up --build
 
 The Docker image intentionally remains lean and does not bundle every third-party scanner. Use the native Windows setup for the broadest local tool integration, or build a separately reviewed internal scanner image.
 
-## Make it live from GitHub
-
-The supported free/hobby architecture is:
-
-```text
-GitHub repository
-├── GitHub Pages → static professional project site
-└── Koyeb free Web Service → read-only FastAPI demo
-                         └── Ollama Cloud API → optional AI responses
-```
-
-The live backend uses `YASHSEC_DEMO_MODE=true`. It seeds only the bundled demo project and denies write/scan permissions. `OLLAMA_API_KEY` must be added in the hosting provider's encrypted secret store, never in GitHub source, Actions logs, `site/`, or `.env.example`.
-
-Follow [GitHub and live deployment](docs/DEPLOYMENT.md) from start to finish. The included Pages workflow reads the repository variable `YASHSEC_LIVE_DEMO_URL` and automatically connects the landing-page button to the deployed demo.
-
 ## Screenshots
 
 | Login and safe demo entry | Findings triage |
