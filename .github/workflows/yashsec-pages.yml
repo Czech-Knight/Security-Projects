@@ -2,7 +2,7 @@ name: Deploy YashSec Autopilot Pages
 
 on:
   push:
-    branches: [main]
+    branches: [yash]
     paths:
       - "YashSec-Autopilot/site/**"
       - "YashSec-Autopilot/docs/screenshots/**"
@@ -44,7 +44,7 @@ jobs:
           config = {
               "githubUrl": (
                   f"https://github.com/{os.environ['REPOSITORY']}"
-                  "/tree/main/YashSec-Autopilot"
+                  "/tree/yash/YashSec-Autopilot"
               ),
               "liveDemoUrl": os.environ.get("LIVE_DEMO_URL", "").strip(),
           }
