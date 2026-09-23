@@ -1,73 +1,58 @@
-# YashSec Improv — implementation roadmap
+# YashSec improvements
 
-This document separates implemented work from proposals. A feature is **not done**
-until its API/UI, permission checks, tests and Windows desktop regression checks
-have been exercised. The improvement branch is based on `main`, which was
-initially created from the repository's existing `yash` branch.
+Working notes for the `YashSec-Improv` branch. This branch is based on `main`.
 
-## Current implementation
+## In this branch
 
-### Scan comparison (initial implementation; runtime validation pending)
-- `app/core/scan_comparison.py` compares findings across the two latest finished
-  scans of the same repository and profile.
-- Only stages successfully completed in *both* scans contribute to new,
-  persisting and not-re-detected categories. Missing coverage is separate.
-- `GET /api/repositories/{repository_id}/scan-comparison` enforces existing
-  scan-read and project-access permissions.
-- Scans UI includes a Compare action and links comparison items to finding detail.
-- `tests/test_scan_comparison.py` includes unit/regression cases, which must
-  be executed together with the existing suite before marking the feature done.
-- Caveat: the existing fingerprint includes title and line number; changes in
-  these fields may register as changed findings. "Not re-detected" is never
-  automatically treated as a verified fix.
+### Scan comparison
 
-### Security progress dashboard (initial implementation; runtime validation pending)
-- `GET /api/repositories/{repository_id}/security-progress` provides a bounded
-  history of finished scans of the latest profile under project-access checks.
-- Projects UI has a Progress button with per-scan counts, critical/high breakdown
-  and a coverage-aware bar chart.
-- `tests/test_progress_dashboard.py` covers chronology, counts, coverage and
-  incompatible scan histories; test execution is still pending.
-- Caveat: the chart counts findings **per scan**, not unique unresolved issues.
-  Partial scans are clearly marked, and trend changes are not proof of a fix.
+The Scans page now has a Compare action. The backend compares the latest two finished scans for the same project and scan profile, showing newly detected, recurring and no-longer-detected findings.
 
-## Requested features — remaining work (feature 15 has an initial implementation)
+Only scanner stages completed in both runs are compared. Findings from missing or failed stages are excluded, so a skipped scan cannot make an issue appear fixed.
 
-| Feature | First useful deliverable | Required safety/quality gate |
-|---|---|---|
-| 1. API Security Testing Studio | Import OpenAPI and run repeatable auth, authorization and validation test cases | Authorized target allow-list; non-destructive defaults; redact secrets |
-| 2. Dependency Attack Path Analysis | Connect scanner package findings to repository imports and call sites | Mark unproven reachability as inferred, not confirmed |
-| 3. Attack Surface Mapping | Graph discovered endpoints, services, ports and auth boundaries | No unsolicited network probing; evidence source per node |
-| 4. Security Test Coverage Map | Mark tested, skipped and untested endpoints and components | Do not claim an endpoint tested from scanner execution alone |
-| 5. Request & Response Inspector | Browse redacted HTTP request/response pairs for approved test runs | Mask cookies, auth headers, tokens and sensitive bodies |
-| 6. AI Security Testing Assistant | AI writes a proposed test plan from code and schema context | Human confirmation before running any new requests/commands |
-| 7. AI Patch Generator | Generate a proposed patch and reviewable diff on a new branch | No auto-merge, protected paths, mandatory rollback and tests |
-| 8. AI False Positive Reviewer | Label evidence confidence and request missing context | Only a human may mark a finding false positive |
-| 9. Automatic GitHub PR Security Review | Run permitted scans against changed PR files and post results | Least-privilege GitHub credentials; fork/PR trust boundaries |
-| 10. Visual Security Workflow Builder | Model approved scan stages as a dependency graph | No arbitrary shell commands; concurrency and cancellation limits |
-| 11. Security Alerts | Notify on newly observed critical findings | Deduplicate notifications; opt-in external delivery |
-| 12. Isolated Testing Environment | Start disposable target containers and clean them up | Restrict network/privileges, cap CPU/memory, no production writes |
-| 13. Custom Scanner Plugin System | Versioned scanner adapter interface with schema validation | Signed/trusted plugin sources, sandbox or explicit install approval |
-| 14. OWASP Testing Checklist | Per-project test case status and linked evidence | Manual vs automated results clearly distinguished |
-| 15. Security Progress Dashboard | Initial per-project findings trend is implemented; add verified new/persisting/not-re-detected trend integration | Coverage context on every trend; exclude incompatible scans |
+Files: `app/core/scan_comparison.py`, `app/main.py`, `app/static/app.js` and `tests/test_scan_comparison.py`.
 
-## Suggested delivery order
+### Security progress
 
-1. Confirm scan comparison and regression tests on Windows and in CI.
-2. Build a normalized evidence/event model and endpoint coverage map.
-3. Add the OWASP checklist, progress dashboard and notification policies.
-4. Implement API studio and redacted request/response inspection.
-5. Add the container isolation layer before expanding dynamic automation.
-6. Add safe scanner plugins, attack surface/dependency graphs and AI review.
-7. Add approval-gated AI patch preview, workflow builder and GitHub PR integration.
+The Projects page now has a Progress view with finding counts across recent scans. The chart separates complete and partial runs and includes a critical/high breakdown.
 
-The public portfolio demo must remain read-only and unable to target third-party
-systems. No remote scanner, patch execution or GitHub write should be enabled
-in that mode.
+Counts are per scan, not a running total of unresolved issues. The comparison view is better suited to checking which findings changed between runs.
 
-## Release verification
+Files: `app/core/progress_dashboard.py`, `app/main.py`, `app/static/app.js` and `tests/test_progress_dashboard.py`.
 
-From the `YashSec-Autopilot` directory:
+## Next features
+
+| Feature | Scope |
+| --- | --- |
+| API testing studio | Import an OpenAPI definition; create and run repeatable authentication, access-control and validation checks. |
+| Request/response inspector | Show redacted requests and responses from approved test runs. |
+| Endpoint coverage | Track tested, skipped and untested API routes. |
+| OWASP test checklist | Keep manual test notes, status and evidence with each project. |
+| Security alerts | Notify on new critical findings without repeating alerts for the same issue. |
+| Attack surface map | Visualize discovered endpoints, services, ports and authentication boundaries. |
+| Dependency attack paths | Connect vulnerable packages to their use in application code. |
+| Isolated test environment | Run test targets in disposable, resource-limited containers. |
+| Scanner plugins | Add a documented adapter interface for approved external scanners. |
+| Visual workflows | Configure scan stages, dependencies and approval steps without arbitrary shell execution. |
+| GitHub PR review | Scan changed files and report newly introduced findings on authorized pull requests. |
+| AI testing assistant | Suggest test cases based on the target's code and API schema; require approval before execution. |
+| AI false-positive review | Summarize supporting and missing evidence without changing review status automatically. |
+| AI patch preview | Prepare a proposed change and diff on a separate branch; require review and passing tests before applying it. |
+| Security progress (follow-up) | Add a reliable new/recurring/resolved trend once finding identities are stable across scans. |
+
+## Development order
+
+1. Run and verify the two views already added, including project permissions and partial-scan cases.
+2. Stabilize finding identities across scans and add endpoint-level coverage.
+3. Build the API testing studio, request/response inspector and OWASP checklist.
+4. Add disposable test environments before expanding dynamic scanning.
+5. Add the remaining integrations, graphs, alerts and guided remediation features.
+
+Keep the public demo read-only. Actual scans, outbound requests, code changes and GitHub writes must stay behind the local application's existing permission and approval controls.
+
+## Before merging
+
+Run from `YashSec-Autopilot`:
 
 ```powershell
 .\.venv\Scripts\python.exe -m compileall -q app airllm_worker
@@ -76,7 +61,6 @@ node --check app\static\app.js
 .\.venv\Scripts\python.exe scripts\repository_hygiene.py
 ```
 
-Also manually verify the scans Compare UI against a fixture with two finished
-scans of the same profile, one with a missing Semgrep stage, and a project user
-without cross-project permissions. No tests have been claimed to pass solely
-because test files were committed.
+Also verify the comparison and progress views in the Windows app. Check a pair of runs where one scanner is unavailable, and confirm users cannot access another project's results.
+
+The new tests have been added but have not yet been run in this environment.
