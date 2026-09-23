@@ -1,0 +1,34 @@
+name: YashSec CodeQL
+
+on:
+  push:
+    branches: [yash]
+    paths:
+      - 'YashSec-Autopilot/**'
+      - '.github/workflows/yashsec-codeql.yml'
+  pull_request:
+    paths:
+      - 'YashSec-Autopilot/**'
+      - '.github/workflows/yashsec-codeql.yml'
+  schedule:
+    - cron: '17 4 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Python static security analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          config-file: ./.github/codeql/yashsec.yml
+      - uses: github/codeql-action/analyze@v3
