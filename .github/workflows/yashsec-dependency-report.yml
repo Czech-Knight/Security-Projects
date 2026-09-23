@@ -1,0 +1,67 @@
+name: YashSec dependency security report
+
+on:
+  pull_request:
+    paths:
+      - 'YashSec-Autopilot/requirements*.txt'
+      - '.github/workflows/yashsec-dependency-report.yml'
+  push:
+    branches: [yash]
+    paths:
+      - 'YashSec-Autopilot/requirements*.txt'
+      - '.github/workflows/yashsec-dependency-report.yml'
+  schedule:
+    - cron: '13 3 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Python dependency audit (advisory baseline)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install pip-audit
+        run: python -m pip install 'pip-audit>=2,<3'
+      - name: Audit YashSec direct and resolved dependencies
+        shell: bash
+        run: |
+          mkdir -p security-reports
+          set +e
+          python -m pip_audit -r YashSec-Autopilot/requirements.txt --format json --output security-reports/yashsec-dependencies.json
+          status=$?
+          set -e
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads(Path('security-reports/yashsec-dependencies.json').read_text())
+          deps = report.get('dependencies') if isinstance(report, dict) else None
+          if not isinstance(deps, list):
+              raise SystemExit('pip-audit did not produce a valid dependency report')
+          affected = [d for d in deps if d.get('vulns')]
+          unique_ids = {v.get('id') for d in affected for v in d['vulns']}
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write(f'pip-audit: {len(deps)} resolved dependencies, {len(affected)} affected packages, {len(unique_ids)} distinct vulnerability IDs.\n')
+              summary.write('Advisory baseline: findings do not currently block merges. Review the JSON report.\n')
+          PY
+          if [ "$status" -gt 1 ]; then
+            echo "pip-audit execution failed with status $status" >&2
+            exit "$status"
+          fi
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: yashsec-dependencies-${{ github.run_id }}
+          path: security-reports/yashsec-dependencies.json
+          retention-days: 14
+          if-no-files-found: warn

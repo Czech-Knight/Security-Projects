@@ -1,0 +1,10 @@
+# GitHub engineering dashboard
+
+| Repository | Existing/new checks | Action |
+| --- | --- | --- |
+| [Cloud drift detector](https://github.com/Czech-Knight/cloud-security-drift-detector) | [Python CI](https://github.com/Czech-Knight/cloud-security-drift-detector/actions/workflows/ci.yml), [Terraform validation](https://github.com/Czech-Knight/cloud-security-drift-detector/actions/workflows/terraform.yml), [static cloud security](https://github.com/Czech-Knight/cloud-security-drift-detector/actions/workflows/cloud-security-posture.yml), [extended lint](https://github.com/Czech-Knight/cloud-security-drift-detector/actions/workflows/extended-lint.yml) | Review static scan artifacts before enforcing |
+| [YashSec](https://github.com/Czech-Knight/Security-Projects/tree/yash/YashSec-Autopilot) | [Quality](https://github.com/Czech-Knight/Security-Projects/actions/workflows/yashsec-quality.yml), [CodeQL](https://github.com/Czech-Knight/Security-Projects/actions/workflows/yashsec-codeql.yml), [dependency report](https://github.com/Czech-Knight/Security-Projects/actions/workflows/yashsec-dependency-report.yml) | Root workflows operate on nested project |
+| [Recordly](https://github.com/Czech-Knight/Recordly) | [Quality](https://github.com/Czech-Knight/Recordly/actions/workflows/quality.yml), [release](https://github.com/Czech-Knight/Recordly/actions/workflows/release.yml) | Preserve existing signed/notarized release process |
+| [Strix development](https://github.com/Czech-Knight/strix-dev-) | [Release](https://github.com/Czech-Knight/strix-dev-/actions/workflows/build-release.yml) | Preserve upstream-derived release process |
+
+**Interpretation:** A green advisory scanner workflow means that a report was produced, not necessarily that no vulnerabilities were detected. Check reports before adding required status checks. The profile README source is [here](GITHUB_PROFILE_README.md); GitHub does not render it as a profile until the separate public `Czech-Knight` repository is created.

@@ -1,0 +1,7 @@
+name: YashSec application paths
+paths:
+  - YashSec-Autopilot/app
+  - YashSec-Autopilot/airllm_worker
+paths-ignore:
+  - '**/tests/**'
+  - '**/sample_targets/**'
