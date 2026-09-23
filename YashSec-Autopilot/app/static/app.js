@@ -380,7 +380,40 @@
   function renderProjectCard(repo) {
     const stacks = (repo.detected_stack || []).map((item) => `<span class="tag">${escapeHtml(item)}</span>`).join('') || '<span class="tag">Stack not identified</span>';
     const candidate = repo.startup_candidates?.[0];
-    return `<article class="project-card"><header><div><div class="eyebrow">${escapeHtml(repo.source_type)} / PROJECT ${repo.id}</div><h3>${escapeHtml(repo.name)}</h3></div>${badge(candidate ? 'detected' : 'needs confirmation', candidate ? 'success' : 'warning')}</header><div class="meta-list"><div class="meta-row"><span>Location</span><span title="${escapeHtml(repo.local_path)}">${escapeHtml(shortPath(repo.local_path))}</span></div><div class="meta-row"><span>Branch</span><span>${escapeHtml(repo.default_branch || 'Local working tree')}</span></div><div class="meta-row"><span>Command</span><span class="mono">${escapeHtml(candidate?.command || 'Not detected')}</span></div><div class="meta-row"><span>Ports</span><span>${escapeHtml((repo.port_hints || []).slice(0, 6).join(', ') || 'Not detected')}</span></div></div><div class="tag-row">${stacks}</div><div class="card-actions"><button class="button primary compact" data-scan-repo="${repo.id}">Run scan</button><button class="button quiet compact" data-project-detail="${repo.id}">Inspect</button>${hasPermission('auth_profiles.manage') ? `<button class="button quiet compact" data-auth-profile="${repo.id}">Auth profile</button>` : ''}</div></article>`;
+    return `<article class="project-card"><header><div><div class="eyebrow">${escapeHtml(repo.source_type)} / PROJECT ${repo.id}</div><h3>${escapeHtml(repo.name)}</h3></div>${badge(candidate ? 'detected' : 'needs confirmation', candidate ? 'success' : 'warning')}</header><div class="meta-list"><div class="meta-row"><span>Location</span><span title="${escapeHtml(repo.local_path)}">${escapeHtml(shortPath(repo.local_path))}</span></div><div class="meta-row"><span>Branch</span><span>${escapeHtml(repo.default_branch || 'Local working tree')}</span></div><div class="meta-row"><span>Command</span><span class="mono">${escapeHtml(candidate?.command || 'Not detected')}</span></div><div class="meta-row"><span>Ports</span><span>${escapeHtml((repo.port_hints || []).slice(0, 6).join(', ') || 'Not detected')}</span></div></div><div class="tag-row">${stacks}</div><div class="card-actions"><button class="button primary compact" data-scan-repo="${repo.id}">Run scan</button><button class="button quiet compact" data-project-detail="${repo.id}">Inspect</button><button class="button quiet compact" data-progress-repo="${repo.id}">Progress</button>${hasPermission('auth_profiles.manage') ? `<button class="button quiet compact" data-auth-profile="${repo.id}">Auth profile</button>` : ''}</div></article>`;
+  }
+
+  async function showSecurityProgress(repositoryId) {
+    try {
+      const result = await api(`/api/repositories/${repositoryId}/security-progress`);
+      if (!result.available) {
+        toast('Progress unavailable', result.message || 'Run a finished scan first.', 'warning');
+        return;
+      }
+      const points = result.points || [];
+      const latest = points[points.length - 1];
+      const maximum = Math.max(1, ...points.map((point) => point.total));
+      const chart = points.map((point) => {
+        const height = Math.max(4, Math.round(72 * point.total / maximum));
+        const details = `Scan #${point.scan_id}: ${point.total} findings; ${point.complete ? 'complete' : 'partial'} coverage`;
+        return `<div title="${escapeHtml(details)}" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:32px;height:94px"><div style="height:${height}px;width:22px;border-radius:4px;background:var(${point.complete ? '--mint' : '--warning'})"></div><small>#${Number(point.scan_id)}</small></div>`;
+      }).join('');
+      const rows = [...points].reverse().map((point) => `<tr><td>#${Number(point.scan_id)}</td><td>${escapeHtml(formatDate(point.completed_at))}</td><td>${point.total}</td><td>${point.critical}</td><td>${point.high}</td><td>${badge(point.complete ? 'complete' : 'partial', point.complete ? 'success' : 'warning')}</td></tr>`).join('');
+      $('#findingModalTitle').textContent = `Security progress · Project ${result.repository_id}`;
+      $('#findingModalBody').innerHTML = `
+        <div class="teaching-note"><b>Per-scan security trend · ${escapeHtml(titleCase(result.profile))}</b><span>${escapeHtml(result.notice)}</span></div>
+        <section class="metric-grid">
+          ${metricCard('Latest findings', latest.total, 'Findings in the most recent finished scan')}
+          ${metricCard('Critical findings', latest.critical, 'Most recent finished scan', 'critical')}
+          ${metricCard('High findings', latest.high, 'Most recent finished scan', 'warning')}
+          ${metricCard('Scan coverage', latest.complete ? 'Complete' : 'Partial', 'Based on selected stages, not complete application security')}
+        </section>
+        <section class="panel"><header class="panel-header"><div><h2>Findings across scans</h2><p>Orange bars show partial scanner coverage; counts may not be comparable.</p></div></header><div class="panel-body" style="overflow-x:auto"><div role="img" aria-label="Total findings per scan, from oldest to newest" style="display:flex;align-items:flex-end;gap:12px;min-width:max-content">${chart}</div></div></section>
+        <section class="panel"><header class="panel-header"><h2>Scan history</h2></header><div class="table-shell"><table><thead><tr><th>Scan</th><th>Finished</th><th>Findings</th><th>Critical</th><th>High</th><th>Coverage</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+      openModal('findingModal');
+    } catch (error) {
+      toast('Progress could not be loaded', error.message, 'error');
+    }
   }
 
   async function showProjectDetail(id) {
@@ -869,6 +902,7 @@
     $$('[data-open-scan]').forEach((node) => node.onclick = () => openScanModal());
     $$('[data-scan-repo]').forEach((node) => node.onclick = () => openScanModal(Number(node.dataset.scanRepo)));
     $$('[data-project-detail]').forEach((node) => node.onclick = () => showProjectDetail(Number(node.dataset.projectDetail)));
+    $$('[data-progress-repo]').forEach((node) => node.onclick = () => showSecurityProgress(Number(node.dataset.progressRepo)));
     $$('[data-redetect]').forEach((node) => node.onclick = async () => { try { await api(`/api/repositories/${node.dataset.redetect}/redetect`, { method: 'POST' }); toast('Detection refreshed'); closeModals(); renderProjects(); } catch (e) { toast('Redetection failed', e.message, 'error'); } });
     $$('[data-auth-profile]').forEach((node) => node.onclick = () => openAuthProfileModal(Number(node.dataset.authProfile)));
     $$('[data-scan-id]').forEach((node) => node.onclick = () => openScan(Number(node.dataset.scanId)));
