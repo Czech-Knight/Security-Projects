@@ -21,7 +21,17 @@ initially created from the repository's existing `yash` branch.
   these fields may register as changed findings. "Not re-detected" is never
   automatically treated as a verified fix.
 
-## Requested features — not yet implemented
+### Security progress dashboard (initial implementation; runtime validation pending)
+- `GET /api/repositories/{repository_id}/security-progress` provides a bounded
+  history of finished scans of the latest profile under project-access checks.
+- Projects UI has a Progress button with per-scan counts, critical/high breakdown
+  and a coverage-aware bar chart.
+- `tests/test_progress_dashboard.py` covers chronology, counts, coverage and
+  incompatible scan histories; test execution is still pending.
+- Caveat: the chart counts findings **per scan**, not unique unresolved issues.
+  Partial scans are clearly marked, and trend changes are not proof of a fix.
+
+## Requested features — remaining work (feature 15 has an initial implementation)
 
 | Feature | First useful deliverable | Required safety/quality gate |
 |---|---|---|
@@ -39,7 +49,7 @@ initially created from the repository's existing `yash` branch.
 | 12. Isolated Testing Environment | Start disposable target containers and clean them up | Restrict network/privileges, cap CPU/memory, no production writes |
 | 13. Custom Scanner Plugin System | Versioned scanner adapter interface with schema validation | Signed/trusted plugin sources, sandbox or explicit install approval |
 | 14. OWASP Testing Checklist | Per-project test case status and linked evidence | Manual vs automated results clearly distinguished |
-| 15. Security Progress Dashboard | Per-project trend for new/persisting/not-re-detected findings | Coverage context on every trend; exclude incompatible scans |
+| 15. Security Progress Dashboard | Initial per-project findings trend is implemented; add verified new/persisting/not-re-detected trend integration | Coverage context on every trend; exclude incompatible scans |
 
 ## Suggested delivery order
 
