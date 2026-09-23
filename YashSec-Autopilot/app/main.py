@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from app import __version__, db
 from app.config import DATA_DIR, DB_PATH, REPORT_DIR, STATIC_DIR, settings
-from app.core import ai_service, backup_service, demo_mode, process_manager, reports, scan_comparison, scan_engine, scheduler, startup_detector, tool_registry
+from app.core import ai_service, backup_service, demo_mode, process_manager, reports, progress_dashboard, scan_comparison, scan_engine, scheduler, startup_detector, tool_registry
 from app.core import auth_profiles as auth_profile_service
 from app.core.process_manager import command_fingerprint
 from app.core.repo_service import (
@@ -942,6 +942,28 @@ def update_finding(
 
 
 # ----------------------------- Dashboard, reports and AI -----------------------------
+
+@app.get("/api/repositories/{repository_id}/security-progress")
+def repository_security_progress(
+    repository_id: int,
+    user: dict[str, Any] = Depends(require_permission("scans.read")),
+) -> dict[str, Any]:
+    """Return at most twelve finished scans of the latest profile for one project."""
+    _get_repository(repository_id, user)
+    with db.connection() as conn:
+        latest = conn.execute(
+            "SELECT profile FROM scans WHERE repository_id=? AND status IN ('completed','completed_partial') "
+            "ORDER BY id DESC LIMIT 1", (repository_id,),
+        ).fetchone()
+        if not latest:
+            return {"available": False, "message": "Run a finished scan to see security progress."}
+        rows = conn.execute(
+            "SELECT * FROM scans WHERE repository_id=? AND profile=? "
+            "AND status IN ('completed','completed_partial') ORDER BY id DESC LIMIT 12",
+            (repository_id, latest["profile"]),
+        ).fetchall()
+    return progress_dashboard.summarize_scan_history([_decode_scan(dict(row)) for row in rows])
+
 
 @app.get("/api/dashboard")
 def dashboard(user: dict[str, Any] = Depends(require_permission("projects.read"))) -> dict[str, Any]:
