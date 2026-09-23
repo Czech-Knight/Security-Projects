@@ -871,8 +871,8 @@
     $$('[data-project-detail]').forEach((node) => node.onclick = () => showProjectDetail(Number(node.dataset.projectDetail)));
     $$('[data-redetect]').forEach((node) => node.onclick = async () => { try { await api(`/api/repositories/${node.dataset.redetect}/redetect`, { method: 'POST' }); toast('Detection refreshed'); closeModals(); renderProjects(); } catch (e) { toast('Redetection failed', e.message, 'error'); } });
     $$('[data-auth-profile]').forEach((node) => node.onclick = () => openAuthProfileModal(Number(node.dataset.authProfile)));
-    $('[data-scan-id]').forEach((node) => node.onclick = () => openScan(Number(node.dataset.scanId)));
-    $('[data-compare-repo]').forEach((node) => node.onclick = () => showScanComparison(Number(node.dataset.compareRepo)));
+    $$('[data-scan-id]').forEach((node) => node.onclick = () => openScan(Number(node.dataset.scanId)));
+    $$('[data-compare-repo]').forEach((node) => node.onclick = () => showScanComparison(Number(node.dataset.compareRepo)));
     $$('[data-finding-id]').forEach((node) => node.onclick = () => openFinding(Number(node.dataset.findingId)));
     $$('[data-findings-scan]').forEach((node) => node.onclick = () => { closeModals(); navigate('findings'); setTimeout(() => renderFindings({ scan_id: node.dataset.findingsScan }), 10); });
     $$('[data-cancel-scan]').forEach((node) => node.onclick = () => cancelScan(Number(node.dataset.cancelScan)));
