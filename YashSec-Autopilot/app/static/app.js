@@ -399,9 +399,39 @@
       const current = await api(`/api/scans/${state.currentScanId}`).catch(() => null);
       if (current && !FINAL_SCAN_STATES.has(current.status)) return renderLiveScan(current);
     }
-    const body = state.scans.length ? `<div class="table-shell"><table><thead><tr><th>Status</th><th>Project / profile</th><th>Coverage</th><th>Findings</th><th>Started</th><th>Action</th></tr></thead><tbody>${state.scans.map((scan) => `<tr><td>${badge(scan.status, scan.status === 'completed_partial' ? 'warning' : scan.status)}</td><td><strong>${escapeHtml(scan.repository_name || `Project ${scan.repository_id}`)}</strong><span class="subtext">${escapeHtml(titleCase(scan.profile))} · ${(scan.selected_tools || []).join(', ')}</span></td><td>${scan.summary?.coverage_complete ? badge('complete', 'success') : badge('partial', 'warning')}</td><td><strong>${scan.summary?.total ?? 0}</strong><span class="subtext">Critical ${scan.summary?.critical ?? 0} · High ${scan.summary?.high ?? 0}</span></td><td>${escapeHtml(formatDate(scan.started_at || scan.created_at))}</td><td><button class="button quiet compact" data-scan-id="${scan.id}">Open</button></td></tr>`).join('')}</tbody></table></div>` : emptyState('No scans yet', 'A Quick scan always includes the built-in scanner and can run without external tools.', '<button class="button primary" data-open-scan>Run first scan</button>');
+    const body = state.scans.length ? `<div class="table-shell"><table><thead><tr><th>Status</th><th>Project / profile</th><th>Coverage</th><th>Findings</th><th>Started</th><th>Action</th></tr></thead><tbody>${state.scans.map((scan) => `<tr><td>${badge(scan.status, scan.status === 'completed_partial' ? 'warning' : scan.status)}</td><td><strong>${escapeHtml(scan.repository_name || `Project ${scan.repository_id}`)}</strong><span class="subtext">${escapeHtml(titleCase(scan.profile))} · ${(scan.selected_tools || []).join(', ')}</span></td><td>${scan.summary?.coverage_complete ? badge('complete', 'success') : badge('partial', 'warning')}</td><td><strong>${scan.summary?.total ?? 0}</strong><span class="subtext">Critical ${scan.summary?.critical ?? 0} · High ${scan.summary?.high ?? 0}</span></td><td>${escapeHtml(formatDate(scan.started_at || scan.created_at))}</td><td><button class="button quiet compact" data-scan-id="${scan.id}">Open</button><button class="button quiet compact" data-compare-repo="${scan.repository_id}">Compare</button></td></tr>`).join('')}</tbody></table></div>` : emptyState('No scans yet', 'A Quick scan always includes the built-in scanner and can run without external tools.', '<button class="button primary" data-open-scan>Run first scan</button>');
     $('#content').innerHTML = body;
     bindDynamicActions();
+  }
+
+  async function showScanComparison(repositoryId) {
+    try {
+      const result = await api(`/api/repositories/${repositoryId}/scan-comparison`);
+      if (!result.available) {
+        toast('Comparison unavailable', result.message || 'Two finished scans are required.', 'warning');
+        return;
+      }
+      const renderEvidence = (items, emptyMessage) => items.length
+        ? items.slice(0, 20).map((finding) => `<button class="priority-item clickable" data-finding-id="${finding.id}" style="width:100%;text-align:left;background:transparent;color:inherit"><span>${badge(finding.severity)}</span><span><b>${escapeHtml(finding.title)}</b><small>${escapeHtml(shortPath(finding.file_path || finding.endpoint || finding.tool))}${finding.line_start ? ` · line ${Number(finding.line_start)}` : ''}</small></span><span>›</span></button>`).join('') + (items.length > 20 ? `<p>${items.length - 20} more findings are available in the Findings view.</p>` : '')
+        : `<p class="subtext">${escapeHtml(emptyMessage)}</p>`;
+      $('#findingModalTitle').textContent = `Scan comparison · Project ${result.repository_id}`;
+      $('#findingModalBody').innerHTML = `
+        <div class="teaching-note"><b>Baseline scan #${Number(result.baseline_scan_id)} → latest scan #${Number(result.latest_scan_id)}</b><span>${escapeHtml(result.coverage_warning)}</span></div>
+        <section class="metric-grid">
+          ${metricCard('Newly detected', result.new.length, 'Evidence not present in baseline')}
+          ${metricCard('Not re-detected', result.not_redetected.length, 'Verify remediation before marking fixed', 'mint')}
+          ${metricCard('Persisting', result.persisting.length, 'Evidence observed in both scans', 'warning')}
+          ${metricCard('Unassessed evidence', result.unassessed_before + result.unassessed_after, 'Excluded because shared stage coverage was missing')}
+        </section>
+        <p class="subtext">Comparable completed scanner stages: ${escapeHtml((result.comparable_tools || []).join(', ') || 'none')} · Same scan profile: ${escapeHtml(result.profile)}</p>
+        <section class="panel"><header class="panel-header"><h2>Newly detected</h2></header><div class="panel-body priority-list">${renderEvidence(result.new, 'No newly detected evidence in comparable stages.')}</div></section>
+        <section class="panel"><header class="panel-header"><h2>Not re-detected</h2></header><div class="panel-body priority-list">${renderEvidence(result.not_redetected, 'No previously observed findings disappeared in comparable stages.')}</div></section>
+        <section class="panel"><header class="panel-header"><h2>Persisting</h2></header><div class="panel-body priority-list">${renderEvidence(result.persisting, 'No repeated evidence in comparable stages.')}</div></section>`;
+      openModal('findingModal');
+      bindDynamicActions();
+    } catch (error) {
+      toast('Comparison failed', error.message, 'error');
+    }
   }
 
   async function openScan(id) {
@@ -841,7 +871,8 @@
     $$('[data-project-detail]').forEach((node) => node.onclick = () => showProjectDetail(Number(node.dataset.projectDetail)));
     $$('[data-redetect]').forEach((node) => node.onclick = async () => { try { await api(`/api/repositories/${node.dataset.redetect}/redetect`, { method: 'POST' }); toast('Detection refreshed'); closeModals(); renderProjects(); } catch (e) { toast('Redetection failed', e.message, 'error'); } });
     $$('[data-auth-profile]').forEach((node) => node.onclick = () => openAuthProfileModal(Number(node.dataset.authProfile)));
-    $$('[data-scan-id]').forEach((node) => node.onclick = () => openScan(Number(node.dataset.scanId)));
+    $('[data-scan-id]').forEach((node) => node.onclick = () => openScan(Number(node.dataset.scanId)));
+    $('[data-compare-repo]').forEach((node) => node.onclick = () => showScanComparison(Number(node.dataset.compareRepo)));
     $$('[data-finding-id]').forEach((node) => node.onclick = () => openFinding(Number(node.dataset.findingId)));
     $$('[data-findings-scan]').forEach((node) => node.onclick = () => { closeModals(); navigate('findings'); setTimeout(() => renderFindings({ scan_id: node.dataset.findingsScan }), 10); });
     $$('[data-cancel-scan]').forEach((node) => node.onclick = () => cancelScan(Number(node.dataset.cancelScan)));
