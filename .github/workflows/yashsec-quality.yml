@@ -1,0 +1,44 @@
+name: YashSec quality
+
+on:
+  push:
+    branches: [yash]
+    paths:
+      - 'YashSec-Autopilot/**'
+      - '.github/workflows/yashsec-quality.yml'
+  pull_request:
+    paths:
+      - 'YashSec-Autopilot/**'
+      - '.github/workflows/yashsec-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: YashSec Python 3.12 checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: YashSec-Autopilot
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: YashSec-Autopilot/requirements-build.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-build.txt
+      - name: Compile application
+        run: python -m compileall -q app airllm_worker
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Check repository hygiene
+        run: python scripts/repository_hygiene.py
+      - name: Check frontend JavaScript
+        run: node --check app/static/app.js
