@@ -39,12 +39,24 @@ jobs:
           python -m pip_audit -r YashSec-Autopilot/requirements.txt --format json --output security-reports/yashsec-dependencies.json
           status=$?
           set -e
-          if [ "$status" -ne 0 ]; then
-            echo "Dependency audit returned $status. Review the artifact before enforcing a vulnerability gate." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "Dependency audit completed without reported vulnerabilities." >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads(Path('security-reports/yashsec-dependencies.json').read_text())
+          deps = report.get('dependencies') if isinstance(report, dict) else None
+          if not isinstance(deps, list):
+              raise SystemExit('pip-audit did not produce a valid dependency report')
+          affected = [d for d in deps if d.get('vulns')]
+          unique_ids = {v.get('id') for d in affected for v in d['vulns']}
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
+              summary.write(f'pip-audit: {len(deps)} resolved dependencies, {len(affected)} affected packages, {len(unique_ids)} distinct vulnerability IDs.\n')
+              summary.write('Advisory baseline: findings do not currently block merges. Review the JSON report.\n')
+          PY
+          if [ "$status" -gt 1 ]; then
+            echo "pip-audit execution failed with status $status" >&2
+            exit "$status"
           fi
-          echo "Advisory baseline: audit findings do not yet block merges." >> "$GITHUB_STEP_SUMMARY"
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
